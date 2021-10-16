@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Annotate layers</title>
+    <title>Cross-Annotate [DEMO]</title>
     <script type="module" src="/src/index.js"></script>
 
     <link rel="stylesheet" href="index.css" />
@@ -12,8 +12,32 @@
 
   <body>
     <main>
+      <div class="c-controls">
+        <h2>Selection color</h2>
+        <div class="c-controls__colors-menu">
+          <div>
+            <input id="r1" type="radio" name="type" value="1" checked />
+            <button id="kbd-1"><kbd>1</kbd></button>
+          </div>
+          <div>
+            <input id="r2" type="radio" name="type" value="2" />
+            <button id="kbd-2"><kbd>2</kbd></button>
+          </div>
+          <div>
+            <input id="r3" type="radio" name="type" value="3" />
+            <button id="kbd-3"><kbd>3</kbd></button>
+          </div>
+        </div>
+        <div class="c-controls__crossings"></div>
+      </div>
+
       <h1>Cross-Annotate</h1>
       <c-article></c-article>
+
+      <div class="c-controls--bottom">
+        <button id="kbd-s"><kbd>S</kbd></button>
+        <button id="kbd-r"><kbd>R</kbd></button>
+      </div>
     </main>
 
     <pre><code class="language-html"></code></pre>

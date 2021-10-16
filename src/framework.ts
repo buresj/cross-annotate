@@ -29,3 +29,11 @@ function createTagName(className: string) {
       .join('')
   );
 }
+
+export interface Component {
+  connectedCallback(): void;
+  disconnectedCallback(): void;
+  adoptedCallbac(): void;
+  attributeChangedCallback(): void;
+  observedAttributes(): void;
+}

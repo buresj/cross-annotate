@@ -1,3 +1,3 @@
 module.exports = {
-  plugins: ["@snowpack/plugin-typescript"],
-}
+  plugins: ['@snowpack/plugin-typescript', '@snowpack/plugin-sass'],
+};

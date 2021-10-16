@@ -1,23 +1,92 @@
 import { text } from './config';
-import { Tag } from './framework';
+import { Tag, Component } from './framework';
 import { IResponse, INode } from './types';
 
-@Tag('c-article')
-export class CArticle extends HTMLElement {
+@Tag()
+export class Article extends HTMLElement {
+  ids: string[] = [];
+
   constructor() {
     super();
   }
+  get spans() {
+    return this.querySelectorAll('c-span');
+  }
 
-  get words() {
-    return this.querySelectorAll('span');
+  get selectedGroup() {
+    return (document.querySelector('input[name="type"]:checked') as HTMLInputElement)?.value! || '0';
+  }
+
+  set selectedGroup(value: string) {
+    (document.querySelector(`input[value='${value}']`) as HTMLInputElement).checked = true;
   }
 
   connectedCallback(): void {
     const { data } = this.mockResponse();
-    console.log(data);
     this.appendChild(this.render(data));
-    console.log(this.innerHTML);
-    this.select();
+
+    const selectHandler = this.select.bind(this);
+    const keypressHandler = this.keypress.bind(this);
+
+    document.addEventListener('selectionchange', selectHandler);
+    document.addEventListener('keypress', keypressHandler);
+  }
+
+  select() {
+    try {
+      const selection = window.getSelection()?.getRangeAt(0);
+      this.ids = [];
+      const firstSpanId = window.getSelection()?.anchorNode?.parentElement?.getAttribute('data-id');
+
+      const selectedFragment = selection?.cloneContents();
+      const spans = selectedFragment?.querySelectorAll('c-span');
+      spans?.forEach((span) => this.ids.push(span.getAttribute('data-id')!));
+
+      if (this.ids.length === 0 && firstSpanId) {
+        this.ids.push(firstSpanId);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  keypress(event: KeyboardEvent) {
+    console.log(`#kbd-${event.key}`)
+    const setClickedStyle = () => {
+      document.querySelector(`#kbd-${event.key}`)?.classList.add('clicked');
+      setTimeout(() => {
+        document.querySelector(`#kbd-${event.key}`)?.classList.remove('clicked');
+      }, 200);
+    };
+
+    if (event.key === 's') {
+      this.setMarkState(this.selectedGroup);
+      setClickedStyle();
+    }
+
+    if (event.key === 'r') {
+      this.setMarkState('0');
+      setClickedStyle();
+    }
+
+    if (event.key === '1') {
+      this.selectedGroup = '1';
+      setClickedStyle();
+    }
+
+    if (event.key === '2') {
+      this.selectedGroup = '2';
+      setClickedStyle();
+    }
+
+    if (event.key === '3') {
+      this.selectedGroup = '3';
+      setClickedStyle();
+    }
+  }
+
+  setMarkState(state: string) {
+    this.spans.forEach((s) => this.ids.includes(s.getAttribute('data-id')!) && s.setAttribute('marked', state));
   }
 
   render(nodeTree: INode[]): DocumentFragment {
@@ -29,7 +98,7 @@ export class CArticle extends HTMLElement {
       if (node.content.length) {
         for (const nesteNode of node.content) {
           const child: INode = nesteNode as INode;
-          const childElement = document.createElement('span');
+          const childElement = document.createElement('c-span');
 
           childElement.setAttribute('data-id', child.id);
           childElement.innerText = (' ' + child.content) as string;
@@ -44,62 +113,6 @@ export class CArticle extends HTMLElement {
     return fragment;
   }
 
-  select() {
-    const alreadySelected: HTMLSpanElement[] = [];
-
-    const setSpanOn = function (span: HTMLSpanElement) {
-      alreadySelected.push(span);
-      span.className = 'text-selected';
-    };
-
-    const setSpanOff = function (span: HTMLSpanElement) {
-      span.className = '';
-    };
-
-    let isSelecting = false;
-    let i = 0;
-
-    for (const word of Array.from(this.words)) {
-      // console.log(word)
-
-      word.addEventListener('onmousedown', (e) => {
-        console.log(e);
-        alreadySelected.splice(0).forEach(setSpanOff);
-        isSelecting = true;
-        // word.onmouseenter();
-      });
-
-      word.addEventListener('onmouseenter', (e) => {
-        console.log(e);
-
-        if (!isSelecting) return;
-
-        // if already selected
-        var j = alreadySelected.indexOf(word);
-
-        if (j >= 0) {
-          // then deselect the spans that were selected after this span
-          alreadySelected.splice(j + 1).forEach(setSpanOff);
-        } else {
-          // else if is not the first, check if the user selected another word
-          // one line down or up. This is done by checking the indexes:
-          if (alreadySelected.length) {
-            var last: any = alreadySelected[alreadySelected.length - 1];
-            var posLast = [].indexOf.call(this.words, last as never);
-            var typeSibling = i > posLast ? 'nextSibling' : 'previousSibling';
-            while (1) {
-              last = last[typeSibling];
-              if (last !== word) setSpanOn(last);
-              else break;
-            }
-          }
-          setSpanOn(word);
-        }
-      });
-      i++;
-    }
-  }
-
   mockResponse(): IResponse {
     const createSpans = (parentId: number): INode[] => {
       return text
@@ -110,5 +123,31 @@ export class CArticle extends HTMLElement {
     const createParagrapgs = (): INode[] =>
       new Array(10).fill(null).map((p, i) => ({ id: i.toString(), nodeName: 'p', content: createSpans(i) }));
     return { data: createParagrapgs() };
+  }
+}
+
+@Tag('c-span')
+export class CSpan extends HTMLElement {
+  isMarked: boolean = false;
+
+  static get observedAttributes() {
+    return ['marked'];
+  }
+
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {}
+
+  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    this.isMarked = !!newValue;
+    oldValue = oldValue || '0';
+
+    const colorIndex = oldValue !== '0' && newValue !== '0' && oldValue !== newValue ? 4 : +newValue;
+
+    const colors = ['transparent', 'hsl(120, 81%, 31%)', 'hsl(200, 43%, 51%)', 'hsl(300, 43%, 51%)', 'red'];
+
+    this.style.backgroundColor = colors[colorIndex];
   }
 }
