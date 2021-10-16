@@ -32,7 +32,7 @@ export class Article extends HTMLElement {
     document.addEventListener('keypress', keypressHandler);
   }
 
-  select() {
+  select(): void {
     try {
       const selection = window.getSelection()?.getRangeAt(0);
       this.ids = [];
@@ -50,8 +50,7 @@ export class Article extends HTMLElement {
     }
   }
 
-  keypress(event: KeyboardEvent) {
-    console.log(`#kbd-${event.key}`)
+  keypress(event: KeyboardEvent): void {
     const setClickedStyle = () => {
       document.querySelector(`#kbd-${event.key}`)?.classList.add('clicked');
       setTimeout(() => {
@@ -85,7 +84,7 @@ export class Article extends HTMLElement {
     }
   }
 
-  setMarkState(state: string) {
+  setMarkState(state: string): void {
     this.spans.forEach((s) => this.ids.includes(s.getAttribute('data-id')!) && s.setAttribute('marked', state));
   }
 

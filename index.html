@@ -4,17 +4,17 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cross-Annotate [DEMO]</title>
+    <title>Cross-Tag [DEMO]</title>
     <script type="module" src="/src/index.js"></script>
-
     <link rel="stylesheet" href="index.css" />
   </head>
 
   <body>
     <main>
-      <div class="c-controls">
-        <h2>Selection color</h2>
-        <div class="c-controls__colors-menu">
+      <fieldset class="c-controls">
+        <legend>Settings</legend>
+        <h3>Tag colors</h3>
+        <div class="c-controls__colors-menu" style="margin-bottom: 1rem">
           <div>
             <input id="r1" type="radio" name="type" value="1" checked />
             <button id="kbd-1"><kbd>1</kbd></button>
@@ -28,10 +28,32 @@
             <button id="kbd-3"><kbd>3</kbd></button>
           </div>
         </div>
-        <div class="c-controls__crossings"></div>
-      </div>
 
-      <h1>Cross-Annotate</h1>
+        <hr style="width: 100%" />
+
+        <h3>Intersecting tags colors</h3>
+
+        <div class="c-controls__crossings">
+          <div>
+            <input type="color" id="r4" name="r4" value="#e66465" />
+            <label for="r4"> 1 / 2</label>
+          </div>
+
+          <div>
+            <input type="color" id="r5" name="r5" value="#f6b73c" />
+            <label for="r5">2 / 3</label>
+          </div>
+
+          <div>
+            <input type="color" id="r6" name="r6" value="#3a47f8" />
+            <label for="r6">3 / 1</label>
+          </div>
+        </div>
+
+        <hr style="width: 100%" />
+      </fieldset>
+
+      <h1>Text</h1>
       <c-article></c-article>
 
       <div class="c-controls--bottom">
