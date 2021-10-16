@@ -1,0 +1,86 @@
+.show-ids {
+  c-span[data-id]:before {
+    content: attr(data-id);
+    position: relative;
+    top: -0.5em;
+    left: 0.4em;
+    font-size: 80%;
+  }
+}
+
+.c-controls--bottom {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  kbd {
+    font-size: 4rem;
+    margin: 1rem;
+    height: 80px;
+    width: 80px;
+  }
+}
+
+.c-controls {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  width: 300px;
+  padding: 1rem;
+
+  &__colors-menu {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+
+    div {
+      input {
+        display: block;
+        width: 40px;
+        height: 40px;
+      }
+
+      kbd {
+        display: block;
+        font-size: 1rem;
+        margin: 0 auto;
+        margin-top: 0.65rem;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  &__crossings {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    div {
+      margin-bottom: 1rem;
+    }
+
+    input {
+      display: block;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 0.65rem;
+    }
+  }
+}
+
+#r1 {
+  accent-color: hsl(120, 81%, 31%);
+}
+
+#r2 {
+  accent-color: hsl(200, 43%, 51%);
+}
+
+#r3 {
+  accent-color: hsl(300, 43%, 51%);
+}
+
+.clicked {
+  background-color: yellow;
+}

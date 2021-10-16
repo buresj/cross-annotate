@@ -31,6 +31,9 @@ export class Article extends HTMLElement {
     document.addEventListener('selectionchange', selectHandler);
     document.addEventListener('keypress', keypressHandler);
 
+    (document.querySelector('#kbd-s') as HTMLElement).onclick = () => this.setMarkState(this.selectedGroup);
+    (document.querySelector('#kbd-r') as HTMLElement).onclick = () => this.setMarkState('0');
+
     (document.querySelector('#ids') as HTMLInputElement).addEventListener('change', (event: Event) => {
       if ((event.target as HTMLInputElement).checked) {
         this.classList.add('show-ids');
@@ -94,6 +97,17 @@ export class Article extends HTMLElement {
 
   setMarkState(state: string): void {
     this.spans.forEach((s) => this.ids.includes(s.getAttribute('data-id')!) && s.setAttribute('marked', state));
+    this.mockRequest(state);
+  }
+
+  mockRequest(state: string) {
+    const payload: any[] = [];
+    this.spans.forEach(
+      (s) => this.ids.includes(s.getAttribute('data-id')!) && payload.push({ id: s.getAttribute('data-id'), state })
+    );
+
+    const code = document.querySelector('code')!;
+    code.textContent = JSON.stringify({ payload }, undefined, 2);
   }
 
   render(nodeTree: INode[]): DocumentFragment {
