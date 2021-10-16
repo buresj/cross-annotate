@@ -30,6 +30,14 @@ export class Article extends HTMLElement {
 
     document.addEventListener('selectionchange', selectHandler);
     document.addEventListener('keypress', keypressHandler);
+
+    (document.querySelector('#ids') as HTMLInputElement).addEventListener('change', (event: Event) => {
+      if ((event.target as HTMLInputElement).checked) {
+        this.classList.add('show-ids');
+      } else {
+        this.classList.remove('show-ids');
+      }
+    });
   }
 
   select(): void {
@@ -137,16 +145,23 @@ export class CSpan extends HTMLElement {
     super();
   }
 
-  connectedCallback() {}
+  getIntersectingColor(a: string, b: string) {
+    const sorted = [+a, +b].sort((a, b) => a - b);
+
+    return (document.querySelector(`input[id="${sorted[0] + '-' + sorted[1]}"]`) as HTMLInputElement)?.value;
+  }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     this.isMarked = !!newValue;
     oldValue = oldValue || '0';
 
-    const colorIndex = oldValue !== '0' && newValue !== '0' && oldValue !== newValue ? 4 : +newValue;
+    if (oldValue !== '0' && newValue !== '0' && oldValue !== newValue) {
+      this.style.backgroundColor = this.getIntersectingColor(oldValue, newValue);
+      return;
+    }
 
     const colors = ['transparent', 'hsl(120, 81%, 31%)', 'hsl(200, 43%, 51%)', 'hsl(300, 43%, 51%)', 'red'];
 
-    this.style.backgroundColor = colors[colorIndex];
+    this.style.backgroundColor = colors[+newValue];
   }
 }

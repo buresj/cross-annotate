@@ -1,3 +1,5 @@
+@import './src/assets/kbd';
+
 html,
 body {
   padding: 0;
@@ -29,13 +31,15 @@ main {
   visibility: visible;
 }
 
-// c-span[data-id]:before {
-//   content: attr(data-id);
-//   position: relative;
-//   top: -0.5em;
-//   left: 0.4em;
-//   font-size: 80%;
-// }
+.show-ids {
+  c-span[data-id]:before {
+    content: attr(data-id);
+    position: relative;
+    top: -0.5em;
+    left: 0.4em;
+    font-size: 80%;
+  }
+}
 
 .c-controls--bottom {
   position: fixed;
@@ -43,14 +47,11 @@ main {
   left: 50%;
   transform: translate(-50%, -50%);
 
-  button {
+  kbd {
+    font-size: 4rem;
     margin: 1rem;
     height: 80px;
     width: 80px;
-  }
-
-  kbd {
-    font-size: 2rem;
   }
 }
 
@@ -73,12 +74,13 @@ main {
         height: 40px;
       }
 
-      button {
+      kbd {
         display: block;
+        font-size: 1rem;
         margin: 0 auto;
         margin-top: 0.65rem;
-        width: 30px;
-        height: 30px;
+        width: 20px;
+        height: 20px;
       }
     }
   }
