@@ -1,0 +1,1 @@
+export const text: string = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Suscipit cupiditate, voluptatem molestiae molestias ipsam quidem incidunt saepe sequi officia, natus tempore ut soluta beatae magni doloribus tempora omnis repudiandae alias.`;

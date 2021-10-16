@@ -1,0 +1,42 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: sans;
+}
+
+main {
+  width: 650px;
+  border: 5px solid black;
+  top: 1rem;
+  padding: 0.5rem;
+  margin: 0 auto;
+  margin-top: 2rem;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.visible {
+  visibility: visible;
+}
+
+c-article {
+  user-select: none;
+}
+
+.text-selected {
+  background-color: blue;
+  color: white;
+}
+
+/* span[data-id]:before {
+  content: attr(data-id);
+  position: relative;
+  top: -0.5em;
+  left: 0.4em;
+  font-size: 80%;
+} */
