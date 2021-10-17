@@ -1,5 +1,3 @@
 # MVP - client TECH DEMO
 
-1. DOCUMENT => { PARSER } => JSON => DB
-2. DB => JSON => { RENDER } => HTML
-3. ANNOTATIONS => { OBSERVER } => JSON => { ANALYZIS } => 2. [INTERACTION LOOP]
+https://cross-annotate.pages.dev/
