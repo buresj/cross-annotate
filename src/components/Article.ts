@@ -1,6 +1,7 @@
 import { Tag } from '../framework';
 import { INode, IResponse } from '../framework/types';
 import data from '../data.json';
+
 @Tag()
 export class Article extends HTMLElement {
   ids: string[] = [];
