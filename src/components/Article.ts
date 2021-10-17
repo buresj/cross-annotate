@@ -1,99 +1,147 @@
-// import { text } from './../config';
-// import { Tag } from './../framework';
-// import { IResponse, INode } from './../types';
+import { Tag } from '../framework';
+import { INode, IResponse } from '../framework/types';
+import data from '../data.json';
+@Tag()
+export class Article extends HTMLElement {
+  ids: string[] = [];
 
-// @Tag()
-// export default class Article extends HTMLElement {
-//   ids: string[] = [];
-//   constructor() {
-//     super();
-//   }
+  constructor() {
+    super();
+  }
+  get spans() {
+    return this.querySelectorAll('c-span');
+  }
 
-//   get spans() {
-//     return this.querySelectorAll('span');
-//   }
+  get selectedGroup() {
+    return (document.querySelector('input[name="type"]:checked') as HTMLInputElement)?.value! || '0';
+  }
 
-//   connectedCallback(): void {
-//     const { data } = this.mockResponse();
-//     this.appendChild(this.render(data));
+  set selectedGroup(value: string) {
+    (document.querySelector(`input[value='${value}']`) as HTMLInputElement).checked = true;
+  }
 
-//     document.addEventListener('selectionchange', () => {
-//       try {
-//         const selection = window.getSelection()?.getRangeAt(0);
-//         this.ids = [];
-//         const firstSpanId = window.getSelection()?.anchorNode?.parentElement?.getAttribute('data-id');
+  connectedCallback(): void {
+    const { data } = this.mockResponse();
+    this.appendChild(this.render(data));
 
-//         const selectedFragment = selection?.cloneContents();
-//         // console.log(selectedFragment?.children);
-//         const spans = selectedFragment?.querySelectorAll('span');
-//         // console.log(spans);
-//         spans?.forEach((span) => this.ids.push(span.getAttribute('data-id')!));
+    const selectHandler = this.select.bind(this);
+    const keypressHandler = this.keypress.bind(this);
 
-//         if (this.ids.length === 0 && firstSpanId) {
-//           this.ids.push(firstSpanId);
-//         }
+    document.addEventListener('selectionchange', selectHandler);
+    document.addEventListener('keypress', keypressHandler);
 
-//         //  console.log(this.ids)
-//       } catch (e) {
-//         console.log(e);
-//       }
-//     });
+    (document.querySelector('#kbd-s') as HTMLElement).onclick = () => this.setMarkState(this.selectedGroup);
+    (document.querySelector('#kbd-r') as HTMLElement).onclick = () => this.setMarkState('0');
 
-//     document.addEventListener('keypress', (e) => {
-//       if (e.key === 's') {
-//         this.spans.forEach((s) => this.ids.includes(s.getAttribute('data-id')!) && s.classList.add('marked'));
+    (document.querySelector('#ids') as HTMLInputElement).addEventListener('change', (event: Event) => {
+      if ((event.target as HTMLInputElement).checked) {
+        this.classList.add('show-ids');
+      } else {
+        this.classList.remove('show-ids');
+      }
+    });
+  }
 
-//         document.querySelector(`#kbd-${e.key}`)?.classList.add('clicked');
-//         setTimeout(() => {
-//           document.querySelector(`#kbd-${e.key}`)?.classList.remove('clicked');
-//         }, 200);
-//       }
+  select(): void {
+    try {
+      const selection = window.getSelection()?.getRangeAt(0);
+      this.ids = [];
+      const firstSpanId = window.getSelection()?.anchorNode?.parentElement?.getAttribute('data-id');
 
-//       if (e.key === 'r') {
-//         this.spans.forEach((s) => this.ids.includes(s.getAttribute('data-id')!) && s.classList.remove('marked'));
+      const selectedFragment = selection?.cloneContents();
+      const spans = selectedFragment?.querySelectorAll('c-span');
+      spans?.forEach((span) => this.ids.push(span.getAttribute('data-id')!));
 
-//         document.querySelector(`#kbd-${e.key}`)?.classList.add('clicked');
-//         setTimeout(() => {
-//           document.querySelector(`#kbd-${e.key}`)?.classList.remove('clicked');
-//         }, 200);
-//       }
-//     });
-//   }
+      if (this.ids.length === 0 && firstSpanId) {
+        this.ids.push(firstSpanId);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
-//   render(nodeTree: INode[]): DocumentFragment {
-//     const fragment = document.createDocumentFragment();
+  keypress(event: KeyboardEvent): void {
+    const setClickedStyle = () => {
+      document.querySelector(`#kbd-${event.key}`)?.classList.add('clicked');
+      setTimeout(() => {
+        document.querySelector(`#kbd-${event.key}`)?.classList.remove('clicked');
+      }, 200);
+    };
 
-//     for (const node of nodeTree) {
-//       const element = document.createElement(node.nodeName);
+    if (event.key === 's') {
+      this.setMarkState(this.selectedGroup);
+      setClickedStyle();
+    }
 
-//       if (node.content.length) {
-//         for (const nesteNode of node.content) {
-//           const child: INode = nesteNode as INode;
-//           const childElement = document.createElement('span');
-//           childElement.setAttribute('is', 'orchard-span')
+    if (event.key === 'r') {
+      this.setMarkState('0');
+      setClickedStyle();
+    }
 
-//           childElement.setAttribute('data-id', child.id);
-//           childElement.innerText = (' ' + child.content) as string;
+    if (event.key === '1') {
+      this.selectedGroup = '1';
+      setClickedStyle();
+    }
 
-//           element.appendChild(childElement);
-//         }
-//       } else {
-//         fragment.appendChild(element);
-//       }
-//       fragment.appendChild(element);
-//     }
-//     return fragment;
-//   }
+    if (event.key === '2') {
+      this.selectedGroup = '2';
+      setClickedStyle();
+    }
 
-//   mockResponse(): IResponse {
-//     const createSpans = (parentId: number): INode[] => {
-//       return text
-//         .split(' ')
-//         .map((w, i) => ({ nodeName: 'span', content: w, id: `${parentId}-${i}`, groups: [], color: 'red' }));
-//     };
+    if (event.key === '3') {
+      this.selectedGroup = '3';
+      setClickedStyle();
+    }
+  }
 
-//     const createParagrapgs = (): INode[] =>
-//       new Array(10).fill(null).map((p, i) => ({ id: i.toString(), nodeName: 'p', content: createSpans(i) }));
-//     return { data: createParagrapgs() };
-//   }
-// }
+  setMarkState(state: string): void {
+    this.spans.forEach((s) => this.ids.includes(s.getAttribute('data-id')!) && s.setAttribute('marked', state));
+    this.mockRequest(state);
+  }
+
+  mockRequest(state: string) {
+    const payload: any[] = [];
+    this.spans.forEach(
+      (s) => this.ids.includes(s.getAttribute('data-id')!) && payload.push({ id: s.getAttribute('data-id'), state })
+    );
+
+    const code = document.querySelector('code')!;
+    code.textContent = JSON.stringify({ payload }, undefined, 2);
+  }
+
+  render(nodeTree: INode[]): DocumentFragment {
+    const fragment = document.createDocumentFragment();
+
+    for (const node of nodeTree) {
+      const element = document.createElement(node.nodeName);
+
+      if (node.content.length) {
+        for (const nesteNode of node.content) {
+          const child: INode = nesteNode as INode;
+          const childElement = document.createElement('c-span');
+
+          childElement.setAttribute('data-id', child.id);
+          childElement.innerText = (' ' + child.content) as string;
+
+          element.appendChild(childElement);
+        }
+      } else {
+        fragment.appendChild(element);
+      }
+      fragment.appendChild(element);
+    }
+    return fragment;
+  }
+
+  mockResponse(): IResponse {
+    const createSpans = (parentId: number): INode[] => {
+      return data.text
+        .split(' ')
+        .map((w, i) => ({ nodeName: 'span', content: w, id: `${parentId}-${i}`, groups: [], color: 'red' }));
+    };
+
+    const createParagrapgs = (): INode[] =>
+      new Array(10).fill(null).map((p, i) => ({ id: i.toString(), nodeName: 'p', content: createSpans(i) }));
+    return { data: createParagrapgs() };
+  }
+}

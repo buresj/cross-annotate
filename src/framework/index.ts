@@ -1,3 +1,7 @@
+// █▀█ █▀█ █▀▀ █░█ ▄▀█ █▀█ █▀▄
+// █▄█ █▀▄ █▄▄ █▀█ █▀█ █▀▄ █▄▀
+// v0.0.1
+
 /**
  *
  * @param overrides class names and creates tag name <c-name></c-name>
